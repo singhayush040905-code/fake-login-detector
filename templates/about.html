@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About &amp; Viva Exam Guide | Fake Login Page Awareness Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .doc-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .doc-section h2 {
+            color: var(--cyan);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .doc-section p, .doc-section li {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+        .flow-step-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .flow-card {
+            background: #090e17;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 1.25rem;
+            position: relative;
+        }
+        .flow-card-num {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--cyan);
+            color: #000;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 0.15rem 0.6rem;
+            border-radius: 999px;
+        }
+        .viva-card {
+            background: #090e17;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--cyan);
+        }
+        .viva-q {
+            font-weight: 700;
+            color: #f8fafc;
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .viva-a {
+            color: #94a3b8;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.88rem;
+        }
+        .matrix-table th, .matrix-table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #1e293b;
+            text-align: left;
+        }
+        .matrix-table th {
+            background: #0d1526;
+            color: var(--cyan);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <span>PhishAware<span style="color: var(--cyan);">Detector</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Scanner</a></li>
+                <li><a href="/history">Scan History</a></li>
+                <li><a href="/about" class="active">About &amp; Viva Guide</a></li>
+                <li><span class="nav-badge">Cybersecurity Lab</span></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero" style="margin-bottom: 2rem;">
+            <h1>Project Architecture &amp; Viva Examination Guide</h1>
+            <p>A comprehensive academic and technical reference designed for project evaluations, viva questions, and technical presentations.</p>
+        </section>
+
+        <!-- Project Overview -->
+        <section class="doc-section">
+            <h2>🎯 Project Overview &amp; Objectives</h2>
+            <p>
+                Phishing remains the number one vector for cyberattacks, responsible for over 80% of reported security incidents. Traditional security awareness relies heavily on users noticing subtle discrepancies in browser address bars—a task that is increasingly difficult due to mobile screen truncation, Unicode homoglyphs, and rapid domain spoofing techniques.
+            </p>
+            <p>
+                <strong>The Fake Login Page Awareness Detector</strong> is a client-server security tool that inspects user-supplied website URLs and their corresponding webpage content for deceptive credential-harvesting indicators. Rather than providing an opaque binary verdict ("Safe" or "Unsafe"), our system computes a <strong>transparent, explainable risk score (0–100)</strong>, visually tokenizes suspicious domain elements, and breaks down exact rule violations with remedial advice.
+            </p>
+
+            <div class="flow-step-box">
+                <div class="flow-card">
+                    <div class="flow-card-num">Step 1</div>
+                    <h4 style="color:#f8fafc; margin-top:0.4rem; margin-bottom:0.4rem;">Target Input</h4>
+                    <p style="font-size:0.85rem; margin:0; color:#94a3b8;">User supplies a login URL or chooses a built-in test case scenario.</p>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-card-num">Step 2</div>
+                    <h4 style="color:#f8fafc; margin-top:0.4rem; margin-bottom:0.4rem;">URL Heuristics</h4>
+                    <p style="font-size:0.85rem; margin:0; color:#94a3b8;">Tokenizer analyzes typosquatting, Levenshtein distance, IDN Punycode, and TLD abuse.</p>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-card-num">Step 3</div>
+                    <h4 style="color:#f8fafc; margin-top:0.4rem; margin-bottom:0.4rem;">DOM Inspection</h4>
+                    <p style="font-size:0.85rem; margin:0; color:#94a3b8;">Requests &amp; BeautifulSoup inspect login forms, password inputs, and external form actions.</p>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-card-num">Step 4</div>
+                    <h4 style="color:#f8fafc; margin-top:0.4rem; margin-bottom:0.4rem;">Explainable Verdict</h4>
+                    <p style="font-size:0.85rem; margin:0; color:#94a3b8;">Risk score (0–100) is displayed on a dynamic gauge alongside security advice.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Scoring System -->
+        <section class="doc-section">
+            <h2>⚖️ Rule-Based Scoring Matrix</h2>
+            <p>Every indicator is assigned an empirically derived weight based on attack severity:</p>
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th>Security Indicator / Heuristic</th>
+                        <th>Risk Weight</th>
+                        <th>Category</th>
+                        <th>Academic Justification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Brand Typosquatting / Lookalike</strong> (e.g. paypa1.com)</td>
+                        <td style="color: #f87171; font-weight: bold;">+30 pts</td>
+                        <td>Domain Analysis</td>
+                        <td>Deliberate misspelling targeting cognitive blindspots via homoglyphs and Levenshtein edit distance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Subdomain Brand Hijacking</strong> (e.g. paypal.com.attacker.com)</td>
+                        <td style="color: #f87171; font-weight: bold;">+25 pts</td>
+                        <td>URL Structure</td>
+                        <td>Deceives victims by prefixing brand strings while apex domain resolves to attacker infrastructure.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>External / Exfiltration Form Action</strong></td>
+                        <td style="color: #f87171; font-weight: bold;">+25 to +30 pts</td>
+                        <td>DOM Behavior</td>
+                        <td>Form accepts password inputs but posts data to an unauthorized third-party domain or webhook.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Direct IP Address as Hostname</strong> (e.g. http://192.168.1.1)</td>
+                        <td style="color: #f87171; font-weight: bold;">+25 pts</td>
+                        <td>Domain Analysis</td>
+                        <td>Legitimate consumer authentication portals never instruct users to submit credentials to raw IP addresses.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Missing HTTPS Encryption</strong> (Plaintext HTTP)</td>
+                        <td style="color: #fbbf24; font-weight: bold;">+20 pts</td>
+                        <td>Protocol Security</td>
+                        <td>Exposes transmitted credentials to local network packet sniffing (CWE-319).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Deceptive '@' Credential Delimiter</strong></td>
+                        <td style="color: #fbbf24; font-weight: bold;">+20 pts</td>
+                        <td>URL Structure</td>
+                        <td>RFC 3986 userinfo trick where browsers ignore the brand prefix prior to '@'.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>High-Abuse TLD with Sensitive Keywords</strong> (e.g. .xyz, .top)</td>
+                        <td style="color: #fbbf24; font-weight: bold;">+15 pts</td>
+                        <td>Domain Analysis</td>
+                        <td>Cheap disposable top-level domains paired with login/verify keywords correlate with active phishing kits.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Shannon Entropy &gt; 3.3 in Domain String</strong></td>
+                        <td style="color: #38bdf8; font-weight: bold;">+15 pts</td>
+                        <td>Information Theory</td>
+                        <td>High mathematical randomness indicative of Domain Generation Algorithms (DGA).</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="background: #090e17; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem;">
+                <strong>Classification Thresholds:</strong>
+                <span style="color: #34d399; margin-left: 1rem;">● 0–29: Low Risk</span>
+                <span style="color: #fbbf24; margin-left: 1rem;">● 30–59: Medium Risk</span>
+                <span style="color: #f87171; margin-left: 1rem;">● 60–100: High Risk</span>
+            </div>
+        </section>
+
+        <!-- Viva Questions & Answers -->
+        <section class="doc-section">
+            <h2>🎓 Comprehensive Viva Examination Q&amp;A</h2>
+            
+            <div class="viva-card">
+                <div class="viva-q">Q1. Why did you choose a rule-based detection engine over Machine Learning?</div>
+                <div class="viva-a">
+                    <strong>Answer:</strong> While Machine Learning (like Random Forests or Neural Networks) can identify statistical patterns, it acts as a "black box" that cannot intuitively explain <em>why</em> a URL was flagged. In contrast, our rule-based expert system provides <strong>deterministic explainability</strong>: it pinpoints the exact substring, protocol violation, or form action anomaly. For educational awareness and third-year coursework, explainable security is far more valuable because users learn how to spot deceptive patterns themselves.
+                </div>
+            </div>
+
+            <div class="viva-card">
+                <div class="viva-q">Q2. What is Typosquatting, and how does your code detect it?</div>
+                <div class="viva-a">
+                    <strong>Answer:</strong> Typosquatting (URL hijacking) is the registration of common misspellings or visually similar permutations of well-known domains (e.g., <code>paypa1.com</code> instead of <code>paypal.com</code>). Our engine implements two complementary mechanisms:
+                    <br>1. <strong>Homoglyph normalization:</strong> Swapping visual lookalikes (e.g., '0' to 'o', '1' to 'l', 'rn' to 'm').
+                    <br>2. <strong>Levenshtein Edit Distance:</strong> A dynamic programming matrix calculation that determines the minimum number of single-character edits required to transform the domain into known brand targets. High similarity (≥ 0.75) outside official brand domains triggers a high-severity warning.
+                </div>
+            </div>
+
+            <div class="viva-card">
+                <div class="viva-q">Q3. Does an active HTTPS connection prove that a website is genuine?</div>
+                <div class="viva-a">
+                    <strong>Answer:</strong> <strong>No, absolutely not.</strong> HTTPS only guarantees that the connection between the client browser and the destination server is encrypted against on-path eavesdroppers (MitM). Threat actors routinely obtain free, valid SSL/TLS certificates (e.g., via Let's Encrypt or Cloudflare) for malicious lookalike domains. Therefore, while missing HTTPS is a severe red flag on a login page, the presence of HTTPS alone does not establish legitimacy.
+                </div>
+            </div>
+
+            <div class="viva-card">
+                <div class="viva-q">Q4. How does the live page inspector examine login form actions?</div>
+                <div class="viva-a">
+                    <strong>Answer:</strong> Using Python's <code>requests</code> and <code>BeautifulSoup</code>, the inspector parses the HTML Document Object Model (DOM) to locate <code>&lt;form&gt;</code> tags containing <code>&lt;input type="password"&gt;</code> elements. It then evaluates the form's <code>action</code> attribute:
+                    <br>• If the action submits credentials to a foreign domain different from the host (Cross-Domain Submission), it flags potential credential exfiltration.
+                    <br>• If the action submits over plaintext HTTP on an HTTPS page, it flags mixed-content credential transmission.
+                    <br>• If the action is empty or points to <code>#</code>, it flags in-memory JavaScript keylogging/asynchronous exfiltration.
+                </div>
+            </div>
+
+            <div class="viva-card">
+                <div class="viva-q">Q5. What is an IDN Homograph / Punycode attack?</div>
+                <div class="viva-a">
+                    <strong>Answer:</strong> Internationalized Domain Names (IDNs) allow non-ASCII characters in domain names, which are encoded using Punycode with a <code>xn--</code> prefix. Attackers exploit characters from different alphabets (such as Cyrillic 'а' U+0430) that appear visually identical to Latin 'a' (U+0061). To a user, <code>apple.com</code> looks genuine, but the browser resolves <code>xn--pple-43d.com</code>. Our tool inspects for the <code>xn--</code> signature and flags it immediately.
+                </div>
+            </div>
+
+            <div class="viva-card">
+                <div class="viva-q">Q6. How does Shannon Entropy identify suspicious domain names?</div>
+                <div class="viva-a">
+                    <strong>Answer:</strong> Shannon Entropy measures information density and unpredictability in bits. Normal human-readable English words have an entropy typically between 2.0 and 2.8. Attackers and botnets using Domain Generation Algorithms (DGA) create random alphanumeric strings (like <code>x7q9kz1a0b.info</code>) which exhibit entropy above 3.3. Our algorithm flags strings with elevated entropy as likely disposable or algorithmically generated hosts.
+                </div>
+            </div>
+
+            <div class="viva-card">
+                <div class="viva-q">Q7. How do you handle potential false positives?</div>
+                <div class="viva-a">
+                    <strong>Answer:</strong> We maintain an authoritative whitelist of verified brand domains (e.g. <code>accounts.google.com</code>, <code>login.microsoftonline.com</code>, <code>paypal.com</code>). If a domain matches an authorized official entry, brand lookalike and typosquatting rules are bypassed. Additionally, our tool outputs a graduated risk score and warning indicators rather than an outright blockage, giving users context to make informed decisions.
+                </div>
+            </div>
+
+            <div class="viva-card">
+                <div class="viva-q">Q8. What are future improvements for Version 2.0?</div>
+                <div class="viva-a">
+                    <strong>Answer:</strong> Planned enhancements include:
+                    <br>1. <strong>Domain Age &amp; WHOIS API:</strong> Flagging newly registered domains (&lt; 30 days old).
+                    <br>2. <strong>Visual Similarity Matching:</strong> Using OpenCV / Perceptual Hashing (pHash) to detect unauthorized brand logos on login pages.
+                    <br>3. <strong>Google Safe Browsing &amp; VirusTotal API Integration:</strong> Cross-referencing global threat intelligence feeds.
+                    <br>4. <strong>Browser Extension Packaging:</strong> Porting the detector to a Chromium/Firefox extension for real-time passive protection.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p><strong>Fake Login Page Awareness Detector</strong> &bull; Viva Examination Reference Document</p>
+    </footer>
+</body>
+</html>

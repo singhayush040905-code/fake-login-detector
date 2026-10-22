@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acme Portal - Official Sign In</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            background: #1e293b;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #334155;
+        }
+        h2 { margin-top: 0; color: #38bdf8; text-align: center; }
+        .badge {
+            background: #065f46;
+            color: #6ee7b7;
+            padding: 0.3rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; color: #94a3b8; }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            background: #0284c7;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background: #0369a1; }
+        .back-link {
+            display: block;
+            margin-top: 1.5rem;
+            text-align: center;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        .back-link:hover { color: #38bdf8; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>Acme Corporation</h2>
+        <div class="badge">🛡️ Authorized Demo Target (Safe Page)</div>
+        
+        <!-- Standard internal form submission matching same origin -->
+        <form action="/demo/legitimate-login" method="POST">
+            <div class="form-group">
+                <label for="username">Corporate Email</label>
+                <input type="text" id="username" name="username" placeholder="user@acme.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••••••" required>
+            </div>
+            <button type="submit">Sign In Securely</button>
+        </form>
+
+        <a href="/" class="back-link">← Back to Fake Login Page Awareness Detector</a>
+    </div>
+</body>
+</html>

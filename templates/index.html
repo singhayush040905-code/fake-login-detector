@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Login Page Awareness Detector | Cybersecurity Project</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Google Fonts for crisp typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <span>PhishAware<span style="color: var(--cyan);">Detector</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="active">Scanner</a></li>
+                <li><a href="/history">Scan History</a></li>
+                <li><a href="/about">About &amp; Viva Guide</a></li>
+                <li><span class="nav-badge">v1.0 Rule Engine</span></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                Proactive Credential Protection
+            </div>
+            <h1>Fake Login Page Awareness Detector</h1>
+            <p>
+                Analyze suspicious website URLs for lookalike brand domains, deceptive subdomains, missing HTTPS encryption, and malicious credential-harvesting login forms before entering passwords.
+            </p>
+        </section>
+
+        <!-- Scanner Input Card -->
+        <section class="scanner-card">
+            <form id="scan-form" class="scanner-form">
+                <div class="input-group">
+                    <div class="url-input-wrapper">
+                        <span class="url-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </span>
+                        <input 
+                            type="text" 
+                            id="url-input" 
+                            class="url-input" 
+                            placeholder="Enter login URL (e.g., accounts.google.com or paypa1-security-verify.xyz)" 
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        >
+                    </div>
+                    <button type="submit" id="btn-scan" class="btn-scan">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Scan URL
+                    </button>
+                </div>
+
+                <div class="scanner-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="inspect-checkbox" checked>
+                        <span>Deep Webpage Inspection (Safe requests, redirects, login forms, &amp; password fields)</span>
+                    </label>
+                    <span style="font-size: 0.8rem; color: #64748b;">*Zero credentials ever sent; pure defensive inspection</span>
+                </div>
+
+                <!-- One-Click Presets for Viva Demos -->
+                <div class="presets-section">
+                    <div class="presets-label">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Quick Test Cases (1-Click Instant Demos)
+                    </div>
+                    <div class="preset-chips">
+                        <button type="button" class="preset-chip chip-safe" data-url="https://accounts.google.com/signin">
+                            🟢 Legitimate Google Login
+                        </button>
+                        <button type="button" class="preset-chip chip-phish" data-url="http://paypa1-security-verify.xyz/login">
+                            🔴 Typosquat Brand Lookalike
+                        </button>
+                        <button type="button" class="preset-chip chip-phish" data-url="http://paypal.com.account-update.xyz/login">
+                            🔴 Subdomain Hijack Attack
+                        </button>
+                        <button type="button" class="preset-chip chip-typo" data-url="http://192.168.1.105/bank/signin">
+                            ⚠️ Direct IP Address Host
+                        </button>
+                        <button type="button" class="preset-chip chip-phish" data-url="http://127.0.0.1:5000/demo/phishing-login">
+                            🧪 Local Mock Phishing Demo
+                        </button>
+                        <button type="button" class="preset-chip chip-safe" data-url="http://127.0.0.1:5000/demo/legitimate-login">
+                            🧪 Local Authorized Safe Demo
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Loading State Animation -->
+        <section id="loading-box" class="loading-box">
+            <div class="spinner"></div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #f8fafc;">Scanning Website Characteristics...</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Running rule-based heuristic checks and DOM inspection</p>
+            <ul class="loading-steps">
+                <li><span>⏳</span> Evaluating domain spelling &amp; typosquatting...</li>
+                <li><span>⏳</span> Checking SSL/HTTPS encryption protocol...</li>
+                <li><span>⏳</span> Testing redirect hops and cross-domain hops...</li>
+                <li><span>⏳</span> Inspecting password input tags &amp; form actions...</li>
+                <li><span>⏳</span> Aggregating points into explainable risk score...</li>
+            </ul>
+        </section>
+
+        <!-- Results Section (Populated dynamically) -->
+        <section id="results-wrapper" class="results-wrapper">
+            <!-- Verdict Banner -->
+            <div id="verdict-banner" class="verdict-banner low-risk">
+                <div class="verdict-text">
+                    <span id="verdict-badge" class="verdict-badge">LOW RISK</span>
+                    <h2 id="verdict-title" class="verdict-title">Low Risk - Safe Login Page</h2>
+                    <div>
+                        <span class="scanned-url-display" id="scanned-url-text">https://example.com</span>
+                    </div>
+                </div>
+
+                <!-- Radial SVG Gauge Meter -->
+                <div class="gauge-box">
+                    <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+                        <svg class="gauge-svg" viewBox="0 0 120 120">
+                            <circle class="gauge-bg" cx="60" cy="60" r="54"></circle>
+                            <circle id="gauge-progress-circle" class="gauge-progress" cx="60" cy="60" r="54" 
+                                    stroke="#10b981" stroke-dasharray="339.292" stroke-dashoffset="339.292"></circle>
+                        </svg>
+                        <div class="gauge-center-text">
+                            <div id="gauge-score-text" class="gauge-score">0</div>
+                            <div class="gauge-total">Out of 100</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Domain Structure Breakdown Bar -->
+            <div class="domain-breakdown-card">
+                <div class="section-subtitle">Visual Domain Decomposition &amp; Token Inspector</div>
+                <div id="url-tokens-bar" class="url-tokens-bar">
+                    <!-- Populated dynamically via main.js -->
+                </div>
+            </div>
+
+            <!-- Detailed Indicators Grid -->
+            <div class="indicators-section">
+                <div class="indicators-header">
+                    <h3 style="font-size: 1.2rem; font-weight: 700;">Suspicious Indicators &amp; Rule Violations</h3>
+                    <span id="indicators-count-badge" class="nav-badge">0 Found</span>
+                </div>
+                <div id="indicators-grid" class="indicators-grid">
+                    <!-- Populated dynamically via main.js -->
+                </div>
+            </div>
+
+            <!-- Live DOM Inspection Card -->
+            <div class="dom-inspection-card">
+                <div class="section-subtitle">Webpage Content &amp; Form Behavior Inspection</div>
+                <div id="inspection-grid" class="inspection-grid">
+                    <!-- Populated dynamically via main.js -->
+                </div>
+            </div>
+
+            <!-- Actionable Safety Advice Box -->
+            <div class="safety-card">
+                <div class="section-subtitle" style="color: var(--cyan);">Safety &amp; Prevention Advice</div>
+                <ul id="safety-list" class="safety-list">
+                    <!-- Populated dynamically via main.js -->
+                </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="report-actions">
+                <button type="button" id="btn-print-report" class="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print / Save Report
+                </button>
+                <button type="button" id="btn-scan-new" class="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10"></polyline>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    </svg>
+                    Scan Another URL
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            <strong>Fake Login Page Awareness Detector</strong> &bull; Third-Year Cybersecurity Mini-Project
+        </p>
+        <p style="margin-top: 0.4rem; font-size: 0.8rem; color: #64748b;">
+            Educational tool for credential theft awareness. Rule-based explainable risk calculation.
+        </p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
