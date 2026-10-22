@@ -7,6 +7,7 @@ and local simulation endpoints for demonstration purposes.
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from detector import (
     analyze_url_and_page,
+    scan_ip_full,
     init_db,
     save_scan,
     get_recent_scans,
@@ -95,6 +96,36 @@ def api_stats():
 def about():
     """Project documentation, architecture, and Viva preparation guide."""
     return render_template("about.html")
+
+@app.route("/ip-scanner")
+def ip_scanner_page():
+    """Network IP and Host Reconnaissance Scanner page."""
+    return render_template("ip_scanner.html")
+
+@app.route("/api/ip-scan", methods=["POST"])
+def api_ip_scan():
+    """
+    POST API to scan an IP address or hostname.
+    Payload: { "target": "8.8.8.8" | "example.com", "scan_ports": true|false }
+    """
+    data = request.get_json(silent=True) or request.form
+    target = data.get("target", "").strip()
+
+    if not target:
+        return jsonify({"status": "error", "message": "An IP address or hostname is required."}), 400
+
+    scan_ports = data.get("scan_ports", True)
+    if isinstance(scan_ports, str):
+        scan_ports = scan_ports.lower() in ("true", "1", "yes")
+
+    try:
+        report = scan_ip_full(target, scan_ports=scan_ports)
+        if "error" in report:
+            return jsonify({"status": "error", "message": report["error"]}), 400
+
+        return jsonify(report)
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"IP Scanning error: {str(e)}"}), 500
 
 # Simulated Demonstration Endpoints
 @app.route("/demo/legitimate-login", methods=["GET", "POST"])

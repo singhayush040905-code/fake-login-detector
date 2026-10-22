@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP &amp; Host Reconnaissance Scanner | PhishAwareDetector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .ip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .ip-card {
+            background: var(--bg-card, #1e293b);
+            border: 1px solid var(--border-color, #334155);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+        }
+        .ip-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 0.75rem;
+        }
+        .ip-card-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f8fafc;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info-table tr td {
+            padding: 0.6rem 0.4rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .info-table tr td:first-child {
+            color: #94a3b8;
+            width: 38%;
+            font-weight: 500;
+        }
+        .info-table tr td:last-child {
+            color: #f1f5f9;
+            font-family: 'JetBrains Mono', monospace;
+            word-break: break-all;
+        }
+        .ports-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .ports-table th {
+            text-align: left;
+            padding: 0.75rem;
+            background: rgba(15, 23, 42, 0.6);
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #334155;
+        }
+        .ports-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.9rem;
+        }
+        .port-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .port-open {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .port-closed {
+            background: rgba(100, 116, 139, 0.15);
+            color: #94a3b8;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+        .port-filtered {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .flag-card {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 0.75rem;
+        }
+        .flag-card.medium {
+            background: rgba(245, 158, 11, 0.1);
+            border-left-color: #f59e0b;
+        }
+        .flag-card h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 0.95rem;
+            color: #f8fafc;
+        }
+        .flag-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <span>PhishAware<span style="color: var(--cyan, #06b6d4);">Detector</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Scanner</a></li>
+                <li><a href="/ip-scanner" class="active">IP Scanner</a></li>
+                <li><a href="/history">Scan History</a></li>
+                <li><a href="/about">About &amp; Viva Guide</a></li>
+                <li><span class="nav-badge">v1.1 Network Engine</span></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                Network Reconnaissance &amp; IP Telemetry
+            </div>
+            <h1>IP &amp; Host Security Scanner</h1>
+            <p>
+                Resolve domains to IP addresses, detect RFC 1918 / Bogon networks, inspect geolocation and ISP autonomous systems (ASN), audit SSL certificates, and probe active TCP service ports.
+            </p>
+        </section>
+
+        <!-- Scanner Card -->
+        <section class="scanner-card">
+            <form id="ip-scan-form" class="scanner-form">
+                <div class="input-group">
+                    <div class="url-input-wrapper">
+                        <span class="url-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                        </span>
+                        <input 
+                            type="text" 
+                            id="target-input" 
+                            class="url-input" 
+                            placeholder="Enter IP address or host (e.g. 8.8.8.8, 1.1.1.1, google.com, 127.0.0.1)" 
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        >
+                    </div>
+                    <button type="submit" id="btn-ip-scan" class="btn-scan">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Scan Target
+                    </button>
+                </div>
+
+                <div class="scanner-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="scan-ports-checkbox" checked>
+                        <span>Probe Common Web, Admin &amp; Database Ports (TCP 21, 22, 25, 53, 80, 443, 3306, 3389, 5000, 8080)</span>
+                    </label>
+                    <span style="font-size: 0.8rem; color: #64748b;">*Non-destructive socket availability probes with latency telemetry</span>
+                </div>
+
+                <!-- One-Click Presets for Quick Testing -->
+                <div class="presets-section">
+                    <div class="presets-label">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Quick Test Targets (1-Click Instant Demos)
+                    </div>
+                    <div class="preset-chips">
+                        <button type="button" class="preset-chip chip-safe" data-target="8.8.8.8">
+                            🌐 Google Public DNS (8.8.8.8)
+                        </button>
+                        <button type="button" class="preset-chip chip-safe" data-target="1.1.1.1">
+                            🌐 Cloudflare DNS (1.1.1.1)
+                        </button>
+                        <button type="button" class="preset-chip chip-typo" data-target="google.com">
+                            🔍 Resolve Hostname (google.com)
+                        </button>
+                        <button type="button" class="preset-chip chip-phish" data-target="127.0.0.1">
+                            🏠 Localhost Loopback (127.0.0.1)
+                        </button>
+                        <button type="button" class="preset-chip chip-typo" data-target="192.168.1.1">
+                            🔒 Private Network Gateway (192.168.1.1)
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Loading State -->
+        <section id="ip-loading-box" class="loading-box" style="display: none;">
+            <div class="spinner"></div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #f8fafc;">Scanning Host &amp; Network Telemetry...</h3>
+            <p style="color: var(--text-muted, #94a3b8); font-size: 0.9rem;">Resolving DNS records, querying IP geolocation, and probing socket ports</p>
+        </section>
+
+        <!-- Results Wrapper -->
+        <section id="ip-results-wrapper" style="display: none;">
+            <!-- Header Summary Card -->
+            <div class="result-header-card" style="margin-bottom: 2rem; background: var(--bg-card, #1e293b); border: 1px solid var(--border-color, #334155); border-radius: 12px; padding: 1.75rem;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                            <span id="res-flag-emoji" style="font-size: 1.75rem;">🌐</span>
+                            <h2 id="res-target-ip" style="margin: 0; font-size: 1.75rem; font-family: 'JetBrains Mono', monospace; color: #38bdf8;">0.0.0.0</h2>
+                            <span id="res-scope-badge" class="badge" style="background: rgba(14, 165, 233, 0.2); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.4); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600;">Public</span>
+                        </div>
+                        <p id="res-target-subtext" style="margin: 0; color: #94a3b8; font-size: 0.95rem;">Host: Resolving...</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div id="res-risk-badge" style="display: inline-block; padding: 0.4rem 1rem; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.35rem; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981;">
+                            LOW RISK (0/100)
+                        </div>
+                        <div id="res-verdict-text" style="font-size: 0.85rem; color: #94a3b8; max-width: 320px;">Secure firewall profile</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two-Column Telemetry Grid -->
+            <div class="ip-grid">
+                <!-- Geolocation & Network Card -->
+                <div class="ip-card">
+                    <div class="ip-card-header">
+                        <h3>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            Network &amp; Geolocation Intel
+                        </h3>
+                    </div>
+                    <table class="info-table">
+                        <tbody>
+                            <tr><td>IP Address</td><td id="info-ip">-</td></tr>
+                            <tr><td>IP Version</td><td id="info-version">IPv4</td></tr>
+                            <tr><td>Reverse DNS (PTR)</td><td id="info-ptr">-</td></tr>
+                            <tr><td>Network Scope</td><td id="info-scope">-</td></tr>
+                            <tr><td>Country</td><td id="info-country">-</td></tr>
+                            <tr><td>Region / City</td><td id="info-region">-</td></tr>
+                            <tr><td>ISP Provider</td><td id="info-isp">-</td></tr>
+                            <tr><td>Autonomous System (ASN)</td><td id="info-asn">-</td></tr>
+                            <tr><td>Timezone</td><td id="info-timezone">-</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SSL Certificate & Port Overview Card -->
+                <div class="ip-card">
+                    <div class="ip-card-header">
+                        <h3>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            SSL/TLS Security Audit
+                        </h3>
+                    </div>
+                    <table class="info-table">
+                        <tbody>
+                            <tr><td>HTTPS Port 443</td><td id="ssl-status">-</td></tr>
+                            <tr><td>Common Name (CN)</td><td id="ssl-cn">-</td></tr>
+                            <tr><td>Certificate Authority</td><td id="ssl-issuer">-</td></tr>
+                            <tr><td>Encryption Protocol</td><td id="ssl-protocol">-</td></tr>
+                            <tr><td>Cipher Suite</td><td id="ssl-cipher">-</td></tr>
+                            <tr><td>Expiration Date</td><td id="ssl-expires">-</td></tr>
+                            <tr><td>Days Remaining</td><td id="ssl-days">-</td></tr>
+                            <tr><td>Self-Signed Check</td><td id="ssl-selfsigned">-</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Security Warnings & Exposed Port Flags -->
+            <div id="security-flags-section" class="ip-card" style="margin-bottom: 2rem; display: none;">
+                <div class="ip-card-header">
+                    <h3>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Security &amp; Port Exposure Findings
+                    </h3>
+                </div>
+                <div id="security-flags-list"></div>
+            </div>
+
+            <!-- Port Probe Results Table -->
+            <div class="ip-card">
+                <div class="ip-card-header">
+                    <h3>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Live TCP Port Availability Telemetry
+                    </h3>
+                    <span id="port-summary-badge" class="port-badge port-open">0 Open Ports</span>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="ports-table">
+                        <thead>
+                            <tr>
+                                <th>Port</th>
+                                <th>Service</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Latency (RTT)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ports-table-body">
+                            <!-- Injected dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Cybersecurity Mini-Project &amp; Viva Demonstration System &bull; PhishAwareDetector v1.1</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("ip-scan-form");
+            const targetInput = document.getElementById("target-input");
+            const scanPortsCheckbox = document.getElementById("scan-ports-checkbox");
+            const btnScan = document.getElementById("btn-ip-scan");
+            const loadingBox = document.getElementById("ip-loading-box");
+            const resultsWrapper = document.getElementById("ip-results-wrapper");
+            const presetChips = document.querySelectorAll(".preset-chip");
+
+            // Preset Chip Click Handlers
+            presetChips.forEach(chip => {
+                chip.addEventListener("click", () => {
+                    const target = chip.getAttribute("data-target");
+                    if (target) {
+                        targetInput.value = target;
+                        executeIpScan(target);
+                    }
+                });
+            });
+
+            // Form Submit
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const target = targetInput.value.trim();
+                if (target) {
+                    executeIpScan(target);
+                }
+            });
+
+            async function executeIpScan(target) {
+                const scanPorts = scanPortsCheckbox ? scanPortsCheckbox.checked : true;
+
+                btnScan.disabled = true;
+                btnScan.innerHTML = `<span class="spinner" style="width:16px;height:16px;border-width:2px;margin:0;display:inline-block;"></span> Scanning...`;
+                loadingBox.style.display = "block";
+                resultsWrapper.style.display = "none";
+
+                try {
+                    const response = await fetch("/api/ip-scan", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ target: target, scan_ports: scanPorts })
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok || data.status === "error") {
+                        alert(data.message || "Failed to scan target. Please check hostname or IP.");
+                        loadingBox.style.display = "none";
+                        btnScan.disabled = false;
+                        btnScan.innerHTML = `Scan Target`;
+                        return;
+                    }
+
+                    renderResults(data);
+                } catch (err) {
+                    alert("Network error occurred while connecting to scanner API: " + err.message);
+                } finally {
+                    loadingBox.style.display = "none";
+                    btnScan.disabled = false;
+                    btnScan.innerHTML = `
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Scan Target
+                    `;
+                }
+            }
+
+            function renderResults(data) {
+                const res = data.resolved;
+                const geo = data.geolocation;
+                const sec = data.security;
+                const ssl = data.ssl;
+                const ports = data.ports || [];
+
+                // Header
+                document.getElementById("res-flag-emoji").textContent = geo.flag_emoji || "🌐";
+                document.getElementById("res-target-ip").textContent = res.ip;
+                document.getElementById("res-scope-badge").textContent = res.network_scope;
+                document.getElementById("res-target-subtext").textContent = `Resolved Host: ${res.hostname} ${res.is_direct_ip ? '(Direct IP input)' : ''}`;
+
+                // Risk Badge
+                const riskBadge = document.getElementById("res-risk-badge");
+                riskBadge.textContent = `${sec.level.toUpperCase()} RISK (${sec.score}/100)`;
+                riskBadge.style.color = sec.color;
+                riskBadge.style.borderColor = sec.color;
+                riskBadge.style.background = sec.color + "22";
+                document.getElementById("res-verdict-text").textContent = sec.verdict;
+
+                // Geolocation
+                document.getElementById("info-ip").textContent = res.ip;
+                document.getElementById("info-version").textContent = `IPv${res.ip_version}`;
+                document.getElementById("info-ptr").textContent = res.hostname || "None (No PTR record)";
+                document.getElementById("info-scope").textContent = res.network_scope;
+                document.getElementById("info-country").textContent = geo.country || "Unknown";
+                document.getElementById("info-region").textContent = `${geo.city || ''}, ${geo.region || ''}`;
+                document.getElementById("info-isp").textContent = geo.isp || "N/A";
+                document.getElementById("info-asn").textContent = geo.as || "N/A";
+                document.getElementById("info-timezone").textContent = geo.timezone || "N/A";
+
+                // SSL Info
+                if (ssl && ssl.has_ssl) {
+                    document.getElementById("ssl-status").innerHTML = `<span style="color:#34d399;font-weight:700;">ACTIVE (TLS/SSL)</span>`;
+                    document.getElementById("ssl-cn").textContent = ssl.common_name || "N/A";
+                    document.getElementById("ssl-issuer").textContent = ssl.issuer || "N/A";
+                    document.getElementById("ssl-protocol").textContent = ssl.protocol || "TLS";
+                    document.getElementById("ssl-cipher").textContent = ssl.cipher || "Standard";
+                    document.getElementById("ssl-expires").textContent = ssl.expires || "Verified";
+                    document.getElementById("ssl-days").textContent = ssl.days_left !== null ? `${ssl.days_left} days` : "Valid";
+                    document.getElementById("ssl-selfsigned").innerHTML = ssl.self_signed 
+                        ? `<span style="color:#ef4444;font-weight:700;">YES (Self-Signed)</span>` 
+                        : `<span style="color:#34d399;">NO (CA-Signed)</span>`;
+                } else {
+                    document.getElementById("ssl-status").innerHTML = `<span style="color:#94a3b8;">NO TLS SERVICE</span>`;
+                    document.getElementById("ssl-cn").textContent = "N/A";
+                    document.getElementById("ssl-issuer").textContent = "N/A";
+                    document.getElementById("ssl-protocol").textContent = "N/A";
+                    document.getElementById("ssl-cipher").textContent = "N/A";
+                    document.getElementById("ssl-expires").textContent = "N/A";
+                    document.getElementById("ssl-days").textContent = "N/A";
+                    document.getElementById("ssl-selfsigned").textContent = "N/A";
+                }
+
+                // Security Flags
+                const flagsSection = document.getElementById("security-flags-section");
+                const flagsList = document.getElementById("security-flags-list");
+                flagsList.innerHTML = "";
+                if (sec.flags && sec.flags.length > 0) {
+                    flagsSection.style.display = "block";
+                    sec.flags.forEach(flag => {
+                        const div = document.createElement("div");
+                        div.className = `flag-card ${flag.severity}`;
+                        div.innerHTML = `<h4>⚠️ ${flag.title}</h4><p>${flag.desc}</p>`;
+                        flagsList.appendChild(div);
+                    });
+                } else {
+                    flagsSection.style.display = "none";
+                }
+
+                // Ports Table
+                const tbody = document.getElementById("ports-table-body");
+                tbody.innerHTML = "";
+                let openCount = 0;
+
+                ports.forEach(p => {
+                    if (p.status === "OPEN") openCount++;
+                    const tr = document.createElement("tr");
+
+                    let statusClass = "port-closed";
+                    if (p.status === "OPEN") statusClass = "port-open";
+                    else if (p.status === "FILTERED") statusClass = "port-filtered";
+
+                    const latencyText = p.latency_ms !== null ? `${p.latency_ms} ms` : "-";
+
+                    tr.innerHTML = `
+                        <td style="font-weight:700; font-family:'JetBrains Mono',monospace; color:#38bdf8;">${p.port}</td>
+                        <td style="font-weight:600; color:#f8fafc;">${p.service}</td>
+                        <td style="color:#94a3b8;">${p.desc}</td>
+                        <td><span class="port-badge ${statusClass}">${p.status}</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace; color:#cbd5e1;">${latencyText}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById("port-summary-badge").textContent = `${openCount} Open Ports Detected`;
+                resultsWrapper.style.display = "block";
+                resultsWrapper.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+    </script>
+</body>
+</html>

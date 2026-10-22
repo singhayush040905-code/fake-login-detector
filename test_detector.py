@@ -98,5 +98,41 @@ class TestDetectorSuite(unittest.TestCase):
         clear_history()
         self.assertEqual(len(get_recent_scans()), 0)
 
+    def test_ip_scanner_resolution_and_classification(self):
+        """Test IP classification for private, loopback, and public targets."""
+        from detector.ip_scanner import resolve_target, evaluate_ip_security
+
+        # Loopback
+        res_loop = resolve_target("127.0.0.1")
+        self.assertTrue(res_loop["is_loopback"])
+        self.assertFalse(res_loop["is_public"])
+
+        # Private RFC 1918
+        res_priv = resolve_target("192.168.1.1")
+        self.assertTrue(res_priv["is_private"])
+        self.assertFalse(res_priv["is_public"])
+
+        # Clean URL stripping
+        res_clean = resolve_target("https://8.8.8.8:8080/test?query=1")
+        self.assertEqual(res_clean["ip"], "8.8.8.8")
+        self.assertTrue(res_clean["is_public"])
+
+    def test_ip_scanner_security_flags(self):
+        """Test detection of high-risk exposed ports (RDP 3389, MySQL 3306)."""
+        from detector.ip_scanner import evaluate_ip_security
+
+        resolved = {"is_public": True, "ip": "1.2.3.4"}
+        mock_ports = [
+            {"port": 3389, "status": "OPEN", "service": "RDP", "desc": "RDP"},
+            {"port": 3306, "status": "OPEN", "service": "MySQL", "desc": "MySQL"},
+            {"port": 80, "status": "CLOSED", "service": "HTTP", "desc": "HTTP"}
+        ]
+        sec = evaluate_ip_security(resolved, mock_ports, ssl_info={"has_ssl": False})
+        self.assertGreaterEqual(sec["score"], 50)
+        self.assertEqual(sec["level"], "high")
+        flag_titles = [f["title"] for f in sec["flags"]]
+        self.assertTrue(any("3389" in t for t in flag_titles))
+        self.assertTrue(any("3306" in t for t in flag_titles))
+
 if __name__ == "__main__":
     unittest.main()
