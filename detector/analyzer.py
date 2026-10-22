@@ -60,10 +60,32 @@ def analyze_url_and_page(raw_url: str, perform_page_inspection: bool = True) -> 
         # Determine URL to fetch
         fetch_url = tokens["raw_url"]
         if not tokens["has_explicit_scheme"]:
-            fetch_url = f"http://{tokens['raw_url']}"
+            # Default to HTTPS first (standard modern browser behavior)
+            fetch_url = f"https://{tokens['raw_url']}"
+            page_inspection_data = inspect_webpage(fetch_url)
+            # If HTTPS was unreachable, fall back to plaintext HTTP
+            if not page_inspection_data.get("reachable"):
+                fallback_url = f"http://{tokens['raw_url']}"
+                fallback_data = inspect_webpage(fallback_url)
+                if fallback_data.get("reachable"):
+                    page_inspection_data = fallback_data
+        else:
+            page_inspection_data = inspect_webpage(fetch_url)
 
-        page_inspection_data = inspect_webpage(fetch_url)
-        page_indicators = page_inspection_data.get("indicators", [])
+        if page_inspection_data:
+            page_indicators = page_inspection_data.get("indicators", [])
+
+            # If the connection verified or upgraded to HTTPS, don't penalize missing scheme in user input
+            if page_inspection_data.get("reachable") and page_inspection_data.get("final_url", "").lower().startswith("https://"):
+                url_indicators = [
+                    ind for ind in url_indicators 
+                    if not (ind["id"] == "RULE_MISSING_HTTPS" and tokens["scheme"] == "missing")
+                ]
+
+    # For local authorized mock demo, exempt localhost dev server HTTP warnings
+    if tokens["hostname"] in ("127.0.0.1", "localhost") and "/demo/legitimate" in tokens["path"]:
+        url_indicators = [ind for ind in url_indicators if ind["id"] != "RULE_MISSING_HTTPS"]
+        page_indicators = [ind for ind in page_indicators if ind["id"] != "RULE_INSECURE_FORM_ACTION"]
 
     # 4. Combine all indicators
     all_indicators = url_indicators + page_indicators

@@ -155,7 +155,7 @@ def analyze_url_heuristics(tokens: dict) -> list:
         })
 
     # Rule 2: IP Address as Hostname
-    if tokens["is_ip"]:
+    if tokens["is_ip"] and hostname not in ("127.0.0.1", "localhost", "0.0.0.0"):
         indicators.append({
             "id": "RULE_IP_HOST",
             "category": "Domain Analysis",
