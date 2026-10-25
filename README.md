@@ -96,9 +96,11 @@ pro/
 │   ├── url_rules.py            # Heuristic checks (typosquatting, homoglyphs, entropy, TLDs)
 │   ├── page_inspector.py       # Live DOM parser & redirect checker (BeautifulSoup & Requests)
 │   ├── brands.py               # Database of target brands, homoglyphs, and Levenshtein algorithm
+│   ├── ip_scanner.py           # Network reconnaissance, IP classification, port probing, SSL audit
 │   └── database.py             # SQLite database layer for audit logs and scan statistics
 ├── templates/
 │   ├── index.html              # Main dashboard: URL scanner, quick demo buttons, risk meter
+│   ├── ip_scanner.html         # Network IP & Host scanner dashboard
 │   ├── history.html            # Scan audit log, search/filter, interactive modal inspector
 │   ├── about.html              # Project documentation, architecture, and Viva preparation guide
 │   └── demo/
@@ -109,7 +111,7 @@ pro/
 │   │   └── style.css           # Modern cybersecurity dark theme UI
 │   └── js/
 │       └── main.js             # Client-side input validation, animated gauge, dynamic rendering
-├── test_detector.py            # Automated unit test suite (9 test cases covering all rules)
+├── test_detector.py            # Automated unit test suite (11 test cases covering all rules & IP checks)
 ├── requirements.txt            # Project dependencies (Flask, requests, beautifulsoup4)
 └── README.md                   # Complete academic documentation and viva reference
 ```
@@ -119,7 +121,7 @@ pro/
 ## 🚀 How to Run the Project Locally
 
 ### 1. Prerequisites
-- Python 3.9, 3.10, 3.11, or 3.12 installed on your computer.
+- Python 3.9+ installed on your computer.
 
 ### 2. Install Required Dependencies
 Open your terminal / command prompt in this project folder and run:
@@ -128,11 +130,11 @@ python -m pip install -r requirements.txt
 ```
 
 ### 3. Run the Unit Test Suite
-To verify that all algorithms, homoglyphs, and rules are functioning correctly:
+To verify that all algorithms, homoglyphs, IP rules, and heuristics are functioning correctly:
 ```bash
 python test_detector.py
 ```
-*(You should see `Ran 9 tests ... OK`)*
+*(You should see `Ran 11 tests ... OK`)*
 
 ### 4. Start the Application
 Run the Flask server:
